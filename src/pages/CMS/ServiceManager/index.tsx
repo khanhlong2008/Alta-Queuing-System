@@ -8,7 +8,6 @@ import {
 import "./style.scss";
 import { Link } from "react-router-dom";
 type Props = {};
-
 const columns = [
     {
       title: 'Mã dịch vụ',

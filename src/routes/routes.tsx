@@ -34,9 +34,12 @@ import DetailProgression from "../pages/CMS/ProgressionManager/DetailProgression
 import Profile from '../pages/CMS/Profile';
 import { ReportManager } from "../pages/CMS/ReportManager";
 import { RoleManager } from "../pages/CMS/SystemInstallationManager/RoleMagager";
-import { AccountManager } from "../pages/CMS/SystemInstallationManager/AccountManager";
-import { UserManager } from "../pages/CMS/SystemInstallationManager/UserManager";
 import { AddRoleManager } from "../pages/CMS/SystemInstallationManager/RoleMagager/AddRoleManager";
+import { UpdateRole } from "../pages/CMS/SystemInstallationManager/RoleMagager/UpdateRole";
+import AccountManager from "../pages/CMS/SystemInstallationManager/AccountManager";
+import UpdateAccount from "../pages/CMS/SystemInstallationManager/AccountManager/UpdateAccount";
+import AddAccount from "../pages/CMS/SystemInstallationManager/AccountManager/AddAccount";
+import UserManager from "../pages/CMS/SystemInstallationManager/UserManager";
 
 export const routes: RouteObject[] = [
   {
@@ -248,6 +251,22 @@ export const routes: RouteObject[] = [
     ),
   },
   {
+    path: "/system-installation/account-manager/add-account",
+    element: (
+      <PrivateRoute>
+        <AddAccount />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: "/system-installation/account-manager/update/:id",
+    element: (
+      <PrivateRoute>
+        <UpdateAccount />
+      </PrivateRoute>
+    ),
+  },
+  {
     path: "/system-installation/user-manager",
     element: (
       <PrivateRoute>
@@ -256,10 +275,18 @@ export const routes: RouteObject[] = [
     ),
   },
   {
-    path: "/system-installation/user-manager/add-role",
+    path: "/system-installation/role-manager/add-role",
     element: (
       <PrivateRoute>
         <AddRoleManager />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: "/system-installation/role-manager/update/:id",
+    element: (
+      <PrivateRoute>
+        <UpdateRole />
       </PrivateRoute>
     ),
   },

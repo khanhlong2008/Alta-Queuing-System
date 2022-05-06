@@ -15,39 +15,10 @@ const columns = [
     width: "10%",
   },
 
-  // {
-  //   title: "Trạng thái hoạt động",
-  //   dataIndex: "trangThai",
-  //   width: "15%",
-  //   render: (trangThai: any) =>
-  //     trangThai ? (
-  //       <span className="flex items-center gap-x-2">
-  //         <span className="block h-2 w-2 bg-primary-green-500 rounded-full"></span>{" "}
-  //         Hoạt động
-  //       </span>
-  //     ) : (
-  //       <span className="flex items-center gap-x-2">
-  //         <span className="block h-2 w-2 bg-primary-red rounded-full"></span>
-  //         Ngưng hoạt động
-  //       </span>
-  //     ),
-  // },
-
   {
     title: "Mô tả",
     dataIndex: "mota",
     width: "30%",
-    // render: (mota: any) => {
-    //   let item = mota.join(",");
-    //   return (
-    //     <div>
-    //       <span className="limit-1">{item}</span>
-    //       {/* <strong className="underline text-primary-blue cursor-pointer">
-    //         Xem thêm
-    //       </strong> */}
-    //     </div>
-    //   );
-    // },
   },
   {
     title: "",
@@ -56,7 +27,7 @@ const columns = [
     render: (item: any, record: any) => (
       <Link
         className="text-blue-500 underline"
-        to={`/devices-management/update/${record.maThietBi}`}
+        to={`/system-installation/role-manager/update/${record.tenvaitro}`}
       >
         Cập nhật
       </Link>
@@ -136,7 +107,7 @@ export const RoleManager = () => {
         />
         {/* Add button */}
         <Link
-          to="/system-installation/user-manager/add-role"
+          to="/system-installation/role-manager/add-role"
           className="absolute -right-28 top-0 flex flex-col h-[94px] w-20 justify-center items-center text-center bg-primary-50 text-primary cursor-pointer hover:text-primary"
         >
           <i className="fa fa-plus-square text-xl"></i>

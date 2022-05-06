@@ -10,35 +10,56 @@ const validateMessages = {
     range: "${label} must be between ${min} and ${max}",
   },
 };
-export const AddRoleManager = () => {
-  const [dichVu, setDichVu] = useState({
-    maDv: "201",
-    capSo: {
-      autoInc: ["0000", "9999"],
-      prefix: "0001",
-      surfix: "0001",
-      everyday: false,
+export const UpdateRole = () => {
+  const [vaitro, setvaitro] = useState({
+    tenvaitro: "Lễ tân",
+    mota: "Thực hiện nhiệm vụ về thống kê số iệu và tổng hợp số liệu",
+    functionA: {
+      all: true,
+      x: true,
+      y: true,
+      z: false,
+    },
+    functionB: {
+      all: true,
+      x: true,
+      y: true,
+      z: false,
     },
   });
   const onFinish = (values: any) => {
-    console.log(dichVu, values);
+    console.log(vaitro, values);
   };
-  function onChange(checkedValues: any) {
-    let temp = { ...dichVu };
-    if (checkedValues.includes("resetEveryday")) {
-      temp.capSo.everyday = true;
-      setDichVu({ ...temp });
+  function onChangeFunctionA(checkedValues: any) {
+    let temp = { ...vaitro };
+    if (checkedValues.includes("resetfunctionZ")) {
+      temp.functionA.z = true;
+      setvaitro({ ...temp });
     }
   }
-  const handleNumeric = (e: any) => {
+  function onChangeFunctionB(checkedValues: any) {
+    let temp = { ...vaitro };
+    if (checkedValues.includes("resetfunctionZ")) {
+      temp.functionB.z = true;
+      setvaitro({ ...temp });
+    }
+  }
+  const handleNameRole = (e: any) => {
     let value = e.target.value;
 
     if (!Number(value)) {
       return;
     }
-    setDichVu({ ...dichVu, maDv: value });
+    setvaitro({ ...vaitro, tenvaitro: value });
   };
+  const handleDescribeRole = (e: any) => {
+    let value = e.target.value;
 
+    if (!Number(value)) {
+      return;
+    }
+    setvaitro({ ...vaitro, mota: value });
+  };
   const handleFormChange = (e: any) => {
     if (e.target.id === "nest-messages_dichvu_maDv") {
       console.log(e.target.value);
@@ -75,7 +96,9 @@ export const AddRoleManager = () => {
                   },
                 ]}
               >
-                <Input value={dichVu.maDv} onChange={handleNumeric} />
+                <p>
+                  <Input value={vaitro.tenvaitro} onChange={handleNameRole} />
+                </p>
               </Form.Item>
               <Form.Item
                 name={["dichvu", "moTa"]}
@@ -89,7 +112,11 @@ export const AddRoleManager = () => {
                 ]}
               >
                 <div className="h-44">
-                  <Input.TextArea className="ml-7 w-[655px] " />
+                  <Input.TextArea
+                    className="ml-7 w-[655px] "
+                    value={vaitro.mota}
+                    onChange={handleDescribeRole}
+                  />
                 </div>
                 <span>
                   <span className="text-primary ml-6">*</span> Là trường thông
@@ -113,35 +140,26 @@ export const AddRoleManager = () => {
                     <h3 className="text-primary text-lg font-bold mb-3">
                       Nhóm chức năng A
                     </h3>
-                    <Checkbox.Group onChange={onChange}>
+                    <Checkbox.Group onChange={onChangeFunctionA}>
                       <Row gutter={[16, 16]}>
                         <Col span={24}>
-                          <Checkbox
-                            value="autoInc"
-                            style={{ lineHeight: "10px" }}
-                          >
+                          <Checkbox value="all" style={{ lineHeight: "10px" }}>
                             Tất cả
                           </Checkbox>
                         </Col>
                         <Col span={24}>
-                          <Checkbox
-                            value="prefix"
-                            style={{ lineHeight: "10px" }}
-                          >
+                          <Checkbox value="x" style={{ lineHeight: "10px" }}>
                             Chức năng x
                           </Checkbox>
                         </Col>
                         <Col span={24}>
-                          <Checkbox
-                            value="surfix"
-                            style={{ lineHeight: "10px" }}
-                          >
+                          <Checkbox value="y" style={{ lineHeight: "10px" }}>
                             Chức năng y
                           </Checkbox>
                         </Col>
                         <Col span={24}>
                           <Checkbox
-                            value="resetEveryday"
+                            value={vaitro.functionA.z}
                             style={{ lineHeight: "10px" }}
                           >
                             Chức năng z
@@ -157,35 +175,26 @@ export const AddRoleManager = () => {
                     <h3 className="text-primary text-lg font-bold mb-3">
                       Nhóm chức năng B
                     </h3>
-                    <Checkbox.Group onChange={onChange}>
+                    <Checkbox.Group onChange={onChangeFunctionB}>
                       <Row gutter={[16, 16]}>
                         <Col span={24}>
-                          <Checkbox
-                            value="autoInc"
-                            style={{ lineHeight: "10px" }}
-                          >
+                          <Checkbox value="all" style={{ lineHeight: "10px" }}>
                             Tất cả
                           </Checkbox>
                         </Col>
                         <Col span={24}>
-                          <Checkbox
-                            value="prefix"
-                            style={{ lineHeight: "10px" }}
-                          >
+                          <Checkbox value="x" style={{ lineHeight: "10px" }}>
                             Chức năng x
                           </Checkbox>
                         </Col>
                         <Col span={24}>
-                          <Checkbox
-                            value="surfix"
-                            style={{ lineHeight: "10px" }}
-                          >
+                          <Checkbox value="y" style={{ lineHeight: "10px" }}>
                             Chức năng y
                           </Checkbox>
                         </Col>
                         <Col span={24}>
                           <Checkbox
-                            value="resetEveryday"
+                            value={vaitro.functionB.z}
                             style={{ lineHeight: "10px" }}
                           >
                             Chức năng z

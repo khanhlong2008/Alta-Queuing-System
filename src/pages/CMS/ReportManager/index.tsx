@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Table, DatePicker } from "antd";
+import { Table, DatePicker, Row, Col } from "antd";
 import {
   CaretRightOutlined,
   CaretUpOutlined,
@@ -116,13 +116,6 @@ export const ReportManager = () => {
         </div>
       </div>
       <div className="relative">
-        <Table
-          className="mt-4"
-          columns={columns}
-          dataSource={table.data}
-          pagination={{ ...table.pagination, onChange: handlePanigationChange }}
-          loading={table.loading}
-        />
         {/* Add button */}
         <Link
           to="/*"
@@ -134,60 +127,80 @@ export const ReportManager = () => {
           </div>
           <span className="font-semibold text-sm leading-[19px]">Tải về</span>
         </Link>
-        <div className="flex flex-col absolute left-60 top-3 dropdown">
-          <div className="dropdown-list1">
-            <div className="dropdown-list__item">Tất cả</div>
-            <div className="dropdown-list__item">2010000</div>
-            <div className="dropdown-list__item">2010001</div>
-            <div className="dropdown-list__item">2010002</div>
-          </div>
+        <div className="flex flex-row  absolute top-2 right-0 left-0">
+          <div className=" basis-full flex justify-end ">
+            <div className="flex flex-col  dropdown">
+              <div className="dropdown-list1">
+                <div className="dropdown-list__item">Tất cả</div>
+                <div className="dropdown-list__item">2010000</div>
+                <div className="dropdown-list__item">2010001</div>
+                <div className="dropdown-list__item">2010002</div>
+              </div>
 
-          <CaretUpOutlined className="mx-2 text-primary-light-gray" />
-          <CaretDownOutlined className="mx-2 text-primary-light-gray" />
-        </div>
-        <div className="flex flex-col absolute left-[448px] top-3 dropdown">
-          <div className="dropdown-list2">
-            <div className="dropdown-list__item">Tất cả</div>
-            <div className="dropdown-list__item">Khám tim mạch</div>
-            <div className="dropdown-list__item">Khám mắt</div>
-            <div className="dropdown-list__item">Khám tổng quát</div>
+              <CaretUpOutlined className="mx-2 text-primary-light-gray" />
+              <CaretDownOutlined className="mx-2 text-primary-light-gray" />
+            </div>
           </div>
+          <div className=" basis-full flex justify-end">
+            <div className="flex flex-col  dropdown">
+              <div className="dropdown-list1">
+                <div className="dropdown-list__item">Tất cả</div>
+                <div className="dropdown-list__item">2010000</div>
+                <div className="dropdown-list__item">2010001</div>
+                <div className="dropdown-list__item">2010002</div>
+              </div>
 
-          <CaretUpOutlined className="mx-2 text-primary-light-gray" />
-          <CaretDownOutlined className="mx-2 text-primary-light-gray" />
-        </div>
-        <div className="flex flex-col absolute left-[678px] top-3 dropdown">
-          <div className="dropdown-list3">
-            <div className="dropdown-list__item">Tất cả</div>
-            <div className="dropdown-list__item">14:35 - 07/11/2021</div>
-            <div className="dropdown-list__item">14:35 - 07/11/2021</div>
-            <div className="dropdown-list__item">14:35 - 07/11/2021</div>
+              <CaretUpOutlined className="mx-2 text-primary-light-gray" />
+              <CaretDownOutlined className="mx-2 text-primary-light-gray" />
+            </div>
           </div>
+          <div className=" basis-full flex justify-end">
+            <div className="flex flex-col  dropdown">
+              <div className="dropdown-list1">
+                <div className="dropdown-list__item">Tất cả</div>
+                <div className="dropdown-list__item">2010000</div>
+                <div className="dropdown-list__item">2010001</div>
+                <div className="dropdown-list__item">2010002</div>
+              </div>
 
-          <CaretUpOutlined className="mx-2 text-primary-light-gray" />
-          <CaretDownOutlined className="mx-2 text-primary-light-gray" />
-        </div>
-        <div className="flex flex-col absolute left-[920px] top-3 dropdown">
-          <div className="dropdown-list5">
-            <div className="dropdown-list__item">Tất cả</div>
-            <div className="dropdown-list__item">Bỏ qua</div>
-            <div className="dropdown-list__item">Đã sử dụng</div>
-            <div className="dropdown-list__item">Đang chờ</div>
+              <CaretUpOutlined className="mx-2 text-primary-light-gray" />
+              <CaretDownOutlined className="mx-2 text-primary-light-gray" />
+            </div>
           </div>
+          <div className=" basis-full flex justify-end">
+            <div className="flex flex-col  dropdown">
+              <div className="dropdown-list1">
+                <div className="dropdown-list__item">Tất cả</div>
+                <div className="dropdown-list__item">2010000</div>
+                <div className="dropdown-list__item">2010001</div>
+                <div className="dropdown-list__item">2010002</div>
+              </div>
 
-          <CaretUpOutlined className="mx-2 text-primary-light-gray" />
-          <CaretDownOutlined className="mx-2 text-primary-light-gray" />
-        </div>
-        <div className="flex flex-col absolute left-[1150px] top-3 dropdown">
-          <div className="dropdown-list4">
-            <div className="dropdown-list__item">Tất cả</div>
-            <div className="dropdown-list__item">Hệ thống</div>
-            <div className="dropdown-list__item">Kiosk</div>
+              <CaretUpOutlined className="mx-2 text-primary-light-gray" />
+              <CaretDownOutlined className="mx-2 text-primary-light-gray" />
+            </div>
           </div>
+          <div className=" basis-full flex justify-end">
+            <div className="flex flex-col  dropdown">
+              <div className="dropdown-list1">
+                <div className="dropdown-list__item">Tất cả</div>
+                <div className="dropdown-list__item">2010000</div>
+                <div className="dropdown-list__item">2010001</div>
+                <div className="dropdown-list__item">2010002</div>
+              </div>
 
-          <CaretUpOutlined className="mx-2 text-primary-light-gray" />
-          <CaretDownOutlined className="mx-2 text-primary-light-gray" />
+              <CaretUpOutlined className="mx-2 text-primary-light-gray" />
+              <CaretDownOutlined className="mx-2 text-primary-light-gray" />
+            </div>
+          </div>
         </div>
+        <Table
+          className="mt-4"
+          columns={columns}
+          dataSource={table.data}
+          pagination={{ ...table.pagination, onChange: handlePanigationChange }}
+          loading={table.loading}
+        />
       </div>
     </div>
   );

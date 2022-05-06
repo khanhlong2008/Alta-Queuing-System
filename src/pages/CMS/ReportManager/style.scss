@@ -3,8 +3,6 @@
     z-index: 2;
 }
 
-
-
 .dropdown:hover .dropdown-list1 {
     opacity: 1;
     visibility: visible;
@@ -33,9 +31,9 @@
 .dropdown-list1 {
     background-color: rgb(241, 236, 236);
     position: absolute;
-    top: 45px;
-    left: -206px;
-    width: 240px;
+    width:310px;
+    top: 46px;
+        left: -280px;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s linear, visibility 0.2s linear;
