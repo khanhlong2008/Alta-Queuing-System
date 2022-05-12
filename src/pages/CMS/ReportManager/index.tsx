@@ -94,6 +94,7 @@ export const ReportManager = () => {
         <span className="text-primary-500 text-xl leading-[30px] font-bold">
           Thiết lập báo cáo
         </span>
+        
       </div>
       <div className="controls flex justify-between">
         <div className="flex gap-x-6">

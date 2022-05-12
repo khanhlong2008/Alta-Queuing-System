@@ -115,13 +115,13 @@ const AccountManager = (props: Props) => {
   return (
     <div className="content pl-[24px] pt-[29px] pr-[100px] relative">
       <div className="path text-primary-gray-light-400 font-bold text-xl leading-[30px] mb-11">
-        Thiết bị &gt;{" "}
+        Cài đặt hệ thống &gt;{" "}
         <span className="text-primary-500 text-xl leading-[30px] font-bold">
-          Danh sách thiết bị
+          Quản lý tài khoản
         </span>
       </div>
       <h2 className="text-primary-500 text-2xl font-bold mb-4">
-        Quản lý thiết bị
+        Danh sách tài khoản
       </h2>
       <div className="controls flex justify-between">
         <div className="flex gap-x-6">
@@ -167,7 +167,7 @@ const AccountManager = (props: Props) => {
         >
           <i className="fa fa-plus-square text-xl"></i>
           <span className="font-semibold text-sm leading-[19px]">
-            Thêm thiết bị
+            Thêm tài khoản
           </span>
         </Link>
       </div>

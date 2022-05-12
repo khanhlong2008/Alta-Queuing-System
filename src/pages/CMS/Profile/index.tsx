@@ -16,12 +16,12 @@ const Profile = () => {
   };
   useEffect(() => {
     form.setFieldsValue({
-      username: 'Dương Quốc Nam',
-      phoneNumber: '0779382202',
-      email: 'duongquocnam224400@gmail.com',
-      loginName: 'DQNam2202',
-      password: '312220200',
-      role: 'Dev',
+      username: "Nguyễn Khánh Long",
+      phoneNumber: "0386060788",
+      email: "khanhlong11a1@gmail.com",
+      loginName: "khanhlong2008",
+      password: "khanhlong2008",
+      role: "Dev",
     });
   }, []);
   const onFormLayoutChange = ({ layout }: { layout: LayoutType }) => {

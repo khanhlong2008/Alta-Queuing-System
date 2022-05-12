@@ -21,7 +21,7 @@
 .dropdown:hover .dropdown-list4 {
     opacity: 1;
     visibility: visible;
-}
+} 
 
 .dropdown:hover .dropdown-list5 {
     opacity: 1;
@@ -33,7 +33,7 @@
     position: absolute;
     width:310px;
     top: 46px;
-        left: -280px;
+    left: -280px;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s linear, visibility 0.2s linear;
