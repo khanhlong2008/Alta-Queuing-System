@@ -16,11 +16,11 @@ const Profile = () => {
   };
   useEffect(() => {
     form.setFieldsValue({
-      username: 'Lê Huỳnh Ái Vân',
-      phoneNumber: '0392680721',
-      email: 'huynhleaivan2000@gmail.com',
-      loginName: 'huynhaivan123',
-      password: 'huynhaivan@123',
+      username: 'Nguyễn Khánh Long',
+      phoneNumber: '0386060788',
+      email: 'khanhlong11a1@gmail.com',
+      loginName: 'khanhlong2008',
+      password: 'khanhlong2008@2000',
       role: 'Inter Front-End Developer',
     });
   }, []);
