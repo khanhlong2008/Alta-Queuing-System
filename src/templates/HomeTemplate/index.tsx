@@ -8,7 +8,7 @@ type Props = {
 const HomeTemplate = (props: Props) => {
 
   return (
-    <div className='relative overflow-hidden h-screen'>
+    <div className='relative'>
        {props.children}
     </div>
   )
