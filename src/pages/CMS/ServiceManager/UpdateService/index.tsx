@@ -129,7 +129,6 @@ const AddService = (props: Props) => {
         });
         return;
       }
-      console.log(value);
       let newVal = "0001";
       if (value.length === 2) {
         newVal = `00${value}`;
@@ -152,7 +151,7 @@ const AddService = (props: Props) => {
     }
   }
   return (
-    <div className="content pl-[24px] pt-[29px] pr-[100px] relative">
+    <div className="update-service content pl-[24px] pt-[29px] pr-[100px] lg:pr-2 md:pt-10 relative">
       <div className="path text-gray-600 font-bold text-lg mb-11">
         Dịch vụ &gt; Danh sách dịch vụ &gt;{" "}
         <span className="text-primary font-bold">Cập nhật</span>
@@ -170,7 +169,7 @@ const AddService = (props: Props) => {
           onChange={handleFormChange}
         >
           <Row gutter={[16, 16]}>
-            <Col span={12}>
+            <Col span={12} xs={24} xl={12}>
               <Form.Item
                 name={["dichvu", "maDv"]}
                 label="Mã dịch vụ:"
@@ -196,7 +195,7 @@ const AddService = (props: Props) => {
                 <Input />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col span={12} xs={24} xl={12}>
               <Form.Item
                 name={["dichvu", "moTa"]}
                 label="Mô tả:"
@@ -296,16 +295,19 @@ const AddService = (props: Props) => {
             <span className="text-primary">*</span> là trường thông tin bắt buộc
           </span>
           <Form.Item>
-            <Space align="center" className=" flex justify-center w-full">
-              <Button className="bg-primary-50 rounded-lg border-primary  text-primary  text-center px-[15px] py-[4px] font-bold hover:text-primary hover:border-primary">
-                Hủy bỏ
-              </Button>
-              <Button
-                className="bg-primary rounded-lg border-primary  text-white  text-center px-[15px] py-[4px] font-bold hover:border-primary hover:bg-primary hover:text-white"
-                htmlType="submit"
-              >
-                Cập nhật
-              </Button>
+            <Space align="center" className=" flex justify-center w-full md:mt-4">
+            <button
+              type='submit'
+              className='w-[160px] text-primary-400 px-6 py-[13px] rounded-lg font-bold text-base outline-none border[1.5px] border-solid border-primary-400 bg-primary-50 leading-[22px]'
+            >
+              Hủy bỏ
+            </button>
+              <button
+              type='submit'
+              className='w-[160px] text-white px-6 py-[13px] rounded-lg font-bold text-base outline-none border border-solid border-primary-400 bg-primary-400 leading-[22px]'
+            >
+              Cập nhật
+            </button>
             </Space>
           </Form.Item>
         </Form>

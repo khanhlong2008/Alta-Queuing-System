@@ -115,9 +115,9 @@ function Dashboard() {
         <h2 className='mb-6 text-primary font-semibold text-lg'>Dashboard</h2>
         <h2 className='mb-6 text-primary font-bold text-xl'>Biểu đồ cấp số</h2>
         <div className='content w-full'>
-          <div className='list flex items-center justify-between w-full gap-x-1 gap-y-1 '>
-            <div className='item flex flex-col items-start gap-y-1 px-3 py-2 rounded-xl'>
-              <div className='header flex items-center gap-x-3'>
+          <div className='list flex items-center justify-between w-full gap-x-1 gap-y-1 xl:flex-wrap xl:justify-center xl:gap-y-2'>
+            <div className='item flex flex-col items-start gap-y-1 px-3 py-2 rounded-xl w-1/4 xl:w-[48%] md:w-full'>
+              <div className='header flex items-center gap-x-3 '>
                 <div className='iconBox h-10 w-10 flex items-center justify-center bg-[#6695FB] rounded-full bg-opacity-10'>
                   <CalendarOutlined className='text-[#6695FB] text-xl' />
                 </div>
@@ -132,7 +132,7 @@ function Dashboard() {
                 </span>
               </div>
             </div>
-            <div className='item flex flex-col items-start gap-y-1 px-3 py-2  rounded-xl'>
+            <div className='item flex flex-col items-start gap-y-1 px-3 py-2  rounded-xl w-1/4 xl:w-[48%] md:w-full'>
               <div className='header flex items-center gap-x-3'>
                 <div className='iconBox h-10 w-10 flex items-center justify-center bg-[#35C75A] rounded-full bg-opacity-10'>
                   <CarryOutOutlined className='text-[#35C75A] text-xl' />
@@ -148,7 +148,7 @@ function Dashboard() {
                 </span>
               </div>
             </div>
-            <div className='item flex flex-col items-start gap-y-1 px-3 py-2  rounded-xl'>
+            <div className='item flex flex-col items-start gap-y-1 px-3 py-2  rounded-xl w-1/4 xl:w-[48%] md:w-full'>
               <div className='header flex items-center gap-x-3'>
                 <div className='iconBox h-10 w-10 flex items-center justify-center bg-primary rounded-full bg-opacity-10'>
                   <img src='./images/svgs/icon-user-phone.svg' alt='svg' />
@@ -164,7 +164,7 @@ function Dashboard() {
                 </span>
               </div>
             </div>
-            <div className='item flex flex-col items-start gap-y-1 px-3 py-2  rounded-xl'>
+            <div className='item flex flex-col items-start gap-y-1 px-3 py-2  rounded-xl w-1/4 xl:w-[48%] md:w-full'>
               <div className='header flex items-center gap-x-3'>
                 <div className='iconBox h-10 w-10 flex items-center justify-center bg-red-500 rounded-full bg-opacity-10'>
                   <img src='./images/svgs/icon-book-mark.svg' alt='svg' />

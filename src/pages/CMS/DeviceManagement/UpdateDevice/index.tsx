@@ -52,7 +52,7 @@ const UpdateDevice = () => {
     });
   }, []);
   return (
-    <div className='content pl-[24px] pt-[29px] pr-[100px] relative'>
+    <div className='content pl-[24px] pt-[29px] pr-[100px] lg:pr-2 relative'>
       <div className='path text-primary-gray-light-400 font-bold text-xl leading-[30px] mb-4'>
         Thiết bị &gt; Danh sách thiết bị &gt;{' '}
         <span className='text-primary-500 text-xl leading-[30px] font-bold'>
@@ -66,7 +66,7 @@ const UpdateDevice = () => {
         </h3> */}
         <Form className='' form={form}>
           <Row gutter={{ lg: 32 }}>
-            <Col span={12}>
+            <Col span={12} xs={24} xl={12}>
               <Form.Item
                 label='Mã thiết bị'
                 name='maThietBi'
@@ -83,7 +83,7 @@ const UpdateDevice = () => {
                 />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col span={12} xs={24} xl={12}>
               <Form.Item
                 label='Loại thiết bị'
                 name='loaiThietBi'
@@ -105,7 +105,7 @@ const UpdateDevice = () => {
                 </Select>
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col span={12} xs={24} xl={12}>
               <Form.Item
                 label='Tên thiết bị'
                 name='tenThietBi'
@@ -122,7 +122,7 @@ const UpdateDevice = () => {
                 />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col span={12} xs={24} xl={12}>
               <Form.Item
                 label='Tên đăng nhập'
                 name='tenDangNhap'
@@ -139,7 +139,7 @@ const UpdateDevice = () => {
                 />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col span={12} xs={24} xl={12}>
               <Form.Item
                 label='Địa chỉ IP'
                 name='ip'
@@ -156,7 +156,7 @@ const UpdateDevice = () => {
                 />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col span={12} xs={24} xl={12}>
               <Form.Item
                 label='Mật khẩu'
                 name='matKhau'
@@ -210,7 +210,7 @@ const UpdateDevice = () => {
               type='submit'
               className='w-[160px] text-white px-6 py-[13px] rounded-lg font-bold text-base outline-none border border-solid border-primary-400 bg-primary-400 leading-[22px]'
             >
-              Thêm thiết bị
+              Cập nhật
             </button>
           </div>
         </Form>

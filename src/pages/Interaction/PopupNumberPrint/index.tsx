@@ -15,7 +15,7 @@ const PopupNumberPrint = (props : Props) => {
     isModalVisible} = props;
 
   return (
-    <div className='flex justify-center items-center min-h-screen'>
+    <div className='flex justify-center items-center w-full min-h-screen'>
       <Button type='primary' onClick={showModal}>
         Open Modal
       </Button>

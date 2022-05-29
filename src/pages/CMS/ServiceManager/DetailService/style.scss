@@ -2,7 +2,10 @@
     .item{
         .ant-select-selector{
             border : 1px solid #D4D4D7 !important;
+            height: 44px;
+            align-items: center;
         }
+        
     }
 }
 // Custom 
@@ -26,10 +29,12 @@
         input{
             border: 1px solid #D4D4D7;
             border-radius: 0.5rem;
+            height: 44px;
         }
     }
     &-group-addon{
         button{
+            height: 44px;
             border-left :0;
             background: #fff;
             border-bottom-right-radius: 0.5rem !important;

@@ -3,13 +3,13 @@ import { Row, Col } from 'antd';
 import { Link } from 'react-router-dom';
 const DetailDevice = () => {
   return (
-    <div className='content pl-[24px] pt-[29px] pr-[100px] relative'>
+    <div className='content pl-[24px] pt-[29px] pr-[100px] lg:pr-2 relative'>
       <div className='path text-gray-600 font-bold text-lg mb-11'>
         Thiết bị &gt; Danh sách thiết bị &gt;{' '}
         <span className='text-primary font-bold'>Chi tiết thiết bị</span>
       </div>
       <h2 className='text-primary text-2xl font-bold mb-4'>Quản lý thiết bị</h2>
-      <div className='relative w-full h-full py-2 px-6 rounded-2xl shadow-[2px_2px_8px_rgba(232, 239, 244, 0.8)] bg-white'>
+      <div className='lg:flex lg:flex-col relative w-full h-full py-2 px-6 rounded-2xl shadow-[2px_2px_8px_rgba(232, 239, 244, 0.8)] bg-white'>
         <h3 className='text-primary text-lg font-bold mb-5'>
           Thông tin thiết bị
         </h3>
@@ -89,7 +89,7 @@ const DetailDevice = () => {
         {/* Updated Device button */}
         <Link
           to='/devices-management/update/:id'
-          className='absolute -right-28 top-0 flex flex-col h-[94px] w-20 justify-center items-center text-center bg-primary-50 text-primary font-bold cursor-pointer hover:text-primary shadow-[0px_0px_6px_rgba(231, 233, 242, 0.8)] rounded-tl-lg'
+          className='lg:relative lg:w-full lg:mt-5 lg:top-auto lg:right-auto absolute -right-28 top-0 flex flex-col h-[94px] w-20 justify-center items-center text-center bg-primary-50 text-primary font-bold cursor-pointer hover:text-primary shadow-[0px_0px_6px_rgba(231, 233, 242, 0.8)] rounded-tl-lg'
         >
           <div className='flex justify-center items-center w-[23px] h-[23px]'>
             <i className='fa fa-pen bg-primary-400 text-white rounded w-full h-full'></i>

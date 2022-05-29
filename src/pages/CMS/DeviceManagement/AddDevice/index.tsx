@@ -22,13 +22,13 @@ const AddDevice = () => {
         </span>
       </div>
       <h2 className='text-primary-500 text-2xl font-bold'>Quản lý thiết bị</h2>
-      <div className='py-2 px-6 rounded-2xl shadow-[2px_2px_8px_rgba(232, 239, 244, 0.8)]'>
-        {/* <h3 className='text-xl font-bold leading-[30px] text-primary'>
+      <div className='py-2 px-6 rounded-2xl add-device shadow-[2px_2px_8px_rgba(232, 239, 244, 0.8)]'>
+        <h3 className='text-xl font-bold leading-[30px] text-primary'>
           Thông tin thiết bị
-        </h3> */}
+        </h3>
         <Form className=''>
-          <Row gutter={{ lg: 32 }}>
-            <Col span={12}>
+          <Row gutter={{ lg: 32 }} >
+            <Col span={12} xs={24} xl={12} >
               <Form.Item
                 label='Mã thiết bị'
                 name='maThietBi'
@@ -45,7 +45,7 @@ const AddDevice = () => {
                 />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col span={12} xs={24} xl={12} >
               <Form.Item
                 label='Loại thiết bị'
                 name='loaiThietBi'
@@ -67,7 +67,7 @@ const AddDevice = () => {
                 </Select>
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col span={12} xs={24} xl={12} >
               <Form.Item
                 label='Tên thiết bị'
                 name='tenThietBi'
@@ -84,7 +84,7 @@ const AddDevice = () => {
                 />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col span={12} xs={24} xl={12} >
               <Form.Item
                 label='Tên đăng nhập'
                 name='tenDangNhap'
@@ -101,7 +101,7 @@ const AddDevice = () => {
                 />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col span={12} xs={24} xl={12} >
               <Form.Item
                 label='Địa chỉ IP'
                 name='ip'
@@ -118,7 +118,7 @@ const AddDevice = () => {
                 />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col span={12} xs={24} xl={12} >
               <Form.Item
                 label='Mật khẩu'
                 name='matKhau'

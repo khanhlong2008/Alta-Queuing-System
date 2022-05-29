@@ -41,7 +41,7 @@ const AddProgression = (props: Props) => {
     console.log(`Selected: ${value}`);
   }
   return (
-    <div className="content pl-[24px] pt-[29px] pr-[50px] relative">
+    <div className="content pl-[24px] pt-[29px] pr-[50px] md:mt-3 lg:pr-2 relative">
       <div className="path text-gray-600 font-bold text-lg mb-11">
         Cấp số &gt; Danh sách cấp số &gt;{" "}
         <span className="text-primary font-bold">Cấp số mới</span>

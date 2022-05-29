@@ -3,7 +3,7 @@ import { Row, Col } from 'antd';
 import { Link } from 'react-router-dom';
 const DetailProgression = () => {
   return (
-    <div className='content pl-[24px] pt-[29px] pr-[100px] relative'>
+    <div className='content pl-[24px] pt-[29px] pr-[100px] md:mt-3 relative'>
       <div className='path text-gray-600 font-bold text-lg mb-11'>
         Thiết bị &gt; Danh sách cấp số &gt;{' '}
         <span className='text-primary font-bold'>Chi tiết</span>
@@ -14,7 +14,7 @@ const DetailProgression = () => {
           Thông tin cấp số
         </h3>
         <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-          <Col span={12}>
+          <Col span={12} xs={24} xl={12}>
             <div className='flex items-center mb-4'>
               <span className='mr-4 font-semibold text-base leading-6 text-primary-gray-500 w-[100px]'>
               Họ tên:
@@ -24,7 +24,7 @@ const DetailProgression = () => {
               </p>
             </div>
           </Col>
-          <Col span={12}>
+          <Col span={12} xs={24} xl={12}>
             <div className='flex items-center mb-4'>
               <span className='mr-4 font-semibold text-base leading-6 text-primary-gray-500 w-[100px]'>
               Nguồn cấp:
@@ -34,7 +34,7 @@ const DetailProgression = () => {
               </p>
             </div>
           </Col>
-          <Col span={12}>
+          <Col span={12} xs={24} xl={12}>
             <div className='flex items-center mb-4'>
               <span className='mr-4 font-semibold text-base leading-6 text-primary-gray-500 w-[100px]'>
               Tên dịch vụ:
@@ -44,7 +44,7 @@ const DetailProgression = () => {
               </p>
             </div>
           </Col>
-          <Col span={12}>
+          <Col span={12} xs={24} xl={12}>
             <div className='flex items-center mb-4'>
               <span className='mr-4 font-semibold text-base leading-6 text-primary-gray-500 w-[100px]'>
               Trạng thái:
@@ -54,7 +54,7 @@ const DetailProgression = () => {
               </p>
             </div>
           </Col>
-          <Col span={12}>
+          <Col span={12} xs={24} xl={12}>
             <div className='flex items-center mb-4'>
               <span className='mr-4 font-semibold text-base leading-6 text-primary-gray-500 w-[100px]'>
               Số thứ tự:
@@ -64,7 +64,7 @@ const DetailProgression = () => {
               </p>
             </div>
           </Col>
-          <Col span={12}>
+          <Col span={12} xs={24} xl={12}>
             <div className='flex items-center mb-4'>
               <span className='mr-4 font-semibold text-base leading-6 text-primary-gray-500 w-[100px]'>
               Số điện thoại:
@@ -74,7 +74,7 @@ const DetailProgression = () => {
               </p>
             </div>
           </Col>
-          <Col span={12}>
+          <Col span={12} xs={24} xl={12}>
             <div className='mb-4'>
               <span className='mr-4 font-semibold text-base leading-6 text-primary-gray-500 w-[100px]'>
               Thời gian cấp:
@@ -84,7 +84,7 @@ const DetailProgression = () => {
               </span>
             </div>
           </Col>
-          <Col span={12}>
+          <Col span={12} xs={24} xl={12}>
             <div className=''>
               <span className='mr-4 font-semibold text-base leading-6 text-primary-gray-500 w-[100px]'>
               Địa chỉ Email:
@@ -94,7 +94,7 @@ const DetailProgression = () => {
               </span>
             </div>
           </Col>
-          <Col span={12}>
+          <Col span={12} xs={24} xl={12}>
             <div className=''>
               <span className='mr-5 font-semibold text-base leading-6 text-primary-gray-500 w-[100px]'>
               Hạn sử dụng:
