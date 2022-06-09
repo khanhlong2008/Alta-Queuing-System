@@ -1,9 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { FormEvent, useEffect, useRef, useState } from 'react';
 import { Input, Select } from 'antd';
 import { Table } from 'antd';
 import { CaretDownOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import './style.scss';
+import userServices from '../../../db/services/user.services';
+import IUser from '../../../db/types/user.type';
+import RoleServices from '../../../db/services/role.services';
+import IRole from '../../../db/types/role.type';
+
 type Props = {};
 
 const columns = [
@@ -36,14 +41,14 @@ const columns = [
     title: 'Trạng thái hoạt động',
     dataIndex: 'trangThai',
     render: (trangThai: any) =>
-      trangThai ? (
+    trangThai ? (
         <span className='flex items-center gap-x-2'>
-          <span className='block h-2 w-2 bg-primary-green-500 rounded-full'></span>{' '}
+          <span className='block h-2 w-2 bg-primary-green-500 rounded-full flex-shrink-0'></span>{' '}
           Hoạt động
         </span>
       ) : (
         <span className='flex items-center gap-x-2'>
-          <span className='block h-2 w-2 bg-primary-red rounded-full'></span>
+          <span className='block h-2 w-2 bg-primary-red rounded-full flex-shrink-0'></span>
           Ngưng hoạt động
         </span>
       ),
@@ -54,7 +59,7 @@ const columns = [
     render: (item: any, record: any) => (
       <Link
         className='text-blue-500 underline'
-        to={`/user-management/update/${record.tenDangNhap}`}
+        to={`/user-management/update/${record.id}`}
       >
         Cập nhật
       </Link>
@@ -63,6 +68,10 @@ const columns = [
 ];
 
 const UserManager = (props: Props) => {
+  const [users, setUsers]= useState<IUser[]>([])
+  const [roles, setRoles]= useState<IRole[]>([])
+
+  const searchRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [table, setTable] = useState({
     data: [],
     pagination: {
@@ -72,35 +81,74 @@ const UserManager = (props: Props) => {
     loading: false,
   });
   const { Option } = Select;
-  function handleChange(value: any) {
-    console.log(`Selected: ${value}`);
-  }
-  const handleDateChange = (date: any, dateString: String) => {
-    console.log(date, dateString);
-  };
   useEffect(() => {
-    //Data demo
-    const data = [];
-    for (let index = 0; index < 50; index++) {
-      const randomPhone = Math.floor(Math.random() * 1000000000);
-      let temp = {
-        key: index,
-        tenDangNhap: `tuyetnguyen@1${index}`,
-        hoTen: `Nguyễn Văn ${(index + 9).toString(36).toUpperCase()}`,
-        soDienThoai: randomPhone,
-        email: 'tuyetnguyen123@gmail.com',
-        vaiTro: 'Kế toán',
-        trangThai: index % 2 === 0 ? true : false,
-      };
-      data.push(temp);
+    (async()=>{
+    let data = await userServices.getUsers()
+    let roles = await RoleServices.getRoles()
+    data = data.map(item=>{
+    //Format vai tro
+    let role= roles.find(role=>role.id === item.vaiTro)
+    return {
+      ...item,
+      key : item.tenDangNhap,
+      vaiTro : role ? role.tenVaiTro : 'Problem',
+      maVaiTro : role?.id
     }
+  })
+    setUsers(data)
+    //Add role tat ca
+    roles.unshift({
+      moTa: 'Example',
+      id : 'all',
+      tenVaiTro: 'Tất cả'
+    })
+    setRoles(roles)
     setTable({ ...table, data: data as any });
+    })()
   }, []);
 
   const handlePanigationChange = (current: any) => {
     setTable({ ...table, pagination: { ...table.pagination, current } });
   };
+  const xoa_dau = (str:string) => {
+    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+    str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+    str = str.replace(/đ/g, "d");
+    str = str.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, "A");
+    str = str.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, "E");
+    str = str.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, "I");
+    str = str.replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, "O");
+    str = str.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "U");
+    str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y");
+    str = str.replace(/Đ/g, "D");
+    return str;
+}
+  const handleChangeKeyWord = (e:React.FormEvent<HTMLInputElement>)=>{
+    let value= e.currentTarget.value
+    if(searchRef){
+      clearInterval(searchRef.current as any)
+    }
+    searchRef.current = setTimeout(() => {
+     let temp = users.filter(item=>
+      xoa_dau(item.tenDangNhap.toLocaleLowerCase()).includes(xoa_dau(value.toLocaleLowerCase()))
+      ||  xoa_dau(item.email.toLocaleLowerCase()).includes(xoa_dau(value.toLocaleLowerCase()))
+      || xoa_dau(item.hoTen.toLocaleLowerCase()).includes(xoa_dau(value.toLocaleLowerCase()))
+      || xoa_dau(item.vaiTro.toLocaleLowerCase()).includes(xoa_dau(value.toLocaleLowerCase()))
+      )
 
+      setTable({...table,data : temp as any})
+      clearInterval(searchRef.current as any)
+    }, 700);
+  }
+  const handleRoleChange = (value:any)=>{
+    let temp = value !== 'all' ? users.filter(item => item.maVaiTro === value ) : users
+    console.log(value)
+    setTable({...table,data : temp as any})
+  }
   return (
     <div className='content pl-[24px] pt-[29px] pr-[100px] lg:pr-2 md:mt-3 relative user'>
       <div className='path text-gray-600 font-bold text-lg mb-11'>
@@ -118,14 +166,13 @@ const UserManager = (props: Props) => {
             </span>
             <Select
               suffixIcon={<CaretDownOutlined />}
-              onChange={handleChange}
-              defaultValue={'Tất cả'}
+              defaultValue={'all'}
               className='w-[300px] h-11 text-primary-gray-400'
+              onChange={handleRoleChange}
             >
-              <Option value='all'>Tất cả</Option>
-              <Option value='keToan'>Kế toán</Option>
-              <Option value='manager'>Quản lý</Option>
-              <Option value='admin'>Admin</Option>
+              {roles && roles.map((item)=>{
+                return <Option key={item.id}>{item.tenVaiTro}</Option>
+              })}
             </Select>
           </div>
         </div>
@@ -135,7 +182,7 @@ const UserManager = (props: Props) => {
           </span>
           <Input.Search
             placeholder='Nhập từ khóa'
-            onSearch={value => console.log(value)}
+            onChange={handleChangeKeyWord}
             className='w-[300px] h-11 text-primary-gray-400'
           />
         </div>

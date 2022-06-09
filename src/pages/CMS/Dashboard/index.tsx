@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './style.scss';
 import {
   ArrowDownOutlined,
@@ -21,6 +21,13 @@ import {
   LineElement,
 } from 'chart.js';
 import AdminRightContent from '../AdminRightContent';
+import ProgressionServices from "../../../db/services/progression.services";
+import IProgression from "../../../db/types/progression.type";
+import ServiceServices from "../../../db/services/service.services";
+import IService from "../../../db/types/service.type";
+import DeviceServices from "../../../db/services/device.services";
+import IDevice from "../../../db/types/device.type";
+
 ChartJS.register(
   ArcElement,
   Filler,
@@ -45,7 +52,7 @@ const data = function () {
       datasets: [
         {
           label: 'Chanllenge',
-          data: [33, 53, 85, 41, 44, 65],
+          data: [33, 100, 85, 100, 70, 100],
           fill: true,
           backgroundColor: gradient,
           borderColor: '#5185F7',
@@ -109,6 +116,42 @@ const options = {
 const { Option } = Select;
 
 function Dashboard() {
+  const [progressions, setProgressions] = useState<IProgression[]>([])
+  const [services, setServices] = useState<IService[]>([])
+  const [devices, setDevices] = useState<IDevice[]>([])
+  const [detail, setDetail] = useState<any>({})
+
+  useEffect(() => {
+   (async ()=>{
+      let data =await ProgressionServices.getProgressions()
+      let data1 =await ServiceServices.getServices()
+      let data2 =await DeviceServices.getDevices()
+      setServices(data1)
+      setDevices(data2)
+      setProgressions(data)
+      let temp = data.reduce((curr:any,next:any)=>{
+        let ex = {...curr}
+          ex.daCap++
+        if(next.trangThai === 'pending'){
+          ex.dangCho++
+        }
+        if(next.trangThai === 'used'){
+          ex.daSuDung++
+        }
+        if(next.trangThai === 'removed'){
+          ex.huyBo++
+        }
+        return ex
+      },{
+        daCap : 0,
+        daSuDung : 0,
+        dangCho : 0,
+        huyBo : 0
+      })
+      setDetail(temp)
+   })()
+  }, [])
+  
   return (
     <div className='flex w-full'>
       <div className='pt-5 dashboard__main w-2/3'>
@@ -126,7 +169,7 @@ function Dashboard() {
                 </div>
               </div>
               <div className='flex items-center justify-between w-full'>
-                <span className='font-bold text-3xl text-gray-600'>4.221</span>{' '}
+                <span className='font-bold text-3xl text-gray-600'>{detail?.daCap}</span>{' '}
                 <span className='flex items-center text-[10px] bg-primary bg-opacity-10  rounded-xl text-bold text-primary px-1 py-1'>
                   <ArrowUpOutlined /> 32,41%
                 </span>
@@ -142,7 +185,7 @@ function Dashboard() {
                 </div>
               </div>
               <div className='flex items-center justify-between w-full'>
-                <span className='font-bold text-3xl text-gray-600'>32</span>{' '}
+                <span className='font-bold text-3xl text-gray-600'>{detail?.daSuDung}</span>{' '}
                 <span className='flex items-center text-[10px] bg-red-500 bg-opacity-10  rounded-xl text-bold text-red-500 px-1 py-1'>
                   <ArrowDownOutlined /> 32,41%
                 </span>
@@ -158,7 +201,7 @@ function Dashboard() {
                 </div>
               </div>
               <div className='flex items-center justify-between w-full'>
-                <span className='font-bold text-3xl text-gray-600'>32</span>{' '}
+                <span className='font-bold text-3xl text-gray-600'>{detail?.dangCho}</span>{' '}
                 <span className='flex items-center text-[10px] bg-red-500 bg-opacity-10  rounded-xl text-bold text-red-500 px-1 py-1'>
                   <ArrowDownOutlined /> 32,41%
                 </span>
@@ -174,7 +217,7 @@ function Dashboard() {
                 </div>
               </div>
               <div className='flex items-center justify-between w-full'>
-                <span className='font-bold text-3xl text-gray-600'>32</span>{' '}
+                <span className='font-bold text-3xl text-gray-600'>{detail?.huyBo}</span>{' '}
                 <span className='flex items-center text-[10px] bg-primary bg-opacity-10  rounded-xl text-bold text-primary px-1 py-1'>
                   <ArrowUpOutlined /> 32,41%
                 </span>
@@ -183,17 +226,20 @@ function Dashboard() {
           </div>
           <div className='chart w-full mt-5 h-full p-[15px]'>
             <div className='flex justify-between items-center w-full'>
-              <h3 className='font-bold text-sm'>Statistical table</h3>
+              <div className='mb-2'>
+              <h3 className='font-bold text-xl'>Bảng thống kê theo ngày</h3>
+              <p className='text-sm text-gray-400'>Tháng 11/2021</p>
+              </div>
               <div className='selectBox flex justify-center items-center gap-x-3'>
-                <span className='font-bold text-sm'>View by</span>
+                <span className='font-bold text-sm'>Xem theo</span>
                 <Select
                   defaultValue={'Day'}
                   className='text-gray-500'
                   suffixIcon={<CaretDownOutlined className='text-primary' />}
                 >
-                  <Option value='Day'>Day</Option>
-                  <Option value='Week'>Week</Option>
-                  <Option value='Year'>Year</Option>
+                  <Option value='Day'>Ngày</Option>
+                  <Option value='Week'>Tuần</Option>
+                  <Option value='Year'>Năm</Option>
                 </Select>
                 {/* <select className="rounded-2xl cursor-pointer focus:outline-none w-[100px] outline-none border-gray-200 border-1 px-[12px] py-[5px] ">
                 <option value="day">Day</option>
@@ -206,7 +252,7 @@ function Dashboard() {
           </div>
         </div>
       </div>
-      <AdminRightContent />
+      <AdminRightContent services={services} devices={devices} progressions={progressions}/>
     </div>
   );
 }

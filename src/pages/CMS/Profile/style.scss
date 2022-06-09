@@ -38,3 +38,12 @@
     color: white;
   }
 }
+.profile .upload{
+  overflow: hidden;
+  label{
+    z-index: 9999;
+  }
+  input{
+    // opacity: 0;
+  }
+}

@@ -1,17 +1,76 @@
-import React from 'react';
-import { Row, Col, Form, Input, Select } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Row, Col, Form, Input, Select, message, Button } from 'antd';
 import { CaretDownOutlined } from '@ant-design/icons';
 import './style.scss';
+import DeviceServices from "../../../../db/services/device.services";
+import IDevice from "../../../../db/types/device.type";
+import ServiceServices from "../../../../db/services/service.services";
+import IService from "../../../../db/types/service.type";
+import Swal from "sweetalert2";
+import { useAppSelector} from "../../../../app/hooks";
+import { selectUser } from "../../../../features/user/userSlice";
+import LogServices from "../../../../db/services/log_system.services";
+import { fetchIP } from "../../../../db/others/ipaddress";
+import { useNavigate } from 'react-router-dom';
 
 const AddDevice = () => {
   const { Option } = Select;
+  const [form] = Form.useForm();
+  const [devices, setDevices] = useState<IDevice[]>([])
+  const [services, setServices] = useState<IService[]>([])
+  const me = useAppSelector(selectUser)
+  const history = useNavigate()
+  useEffect(() => {
+    //Data demo
+    (async()=>{
+      let data1 = await DeviceServices.getDevices()
+      setDevices(data1)
+      let data2 = await ServiceServices.getServices()
+      setServices(data2)
+      })()
+  }, []);
+  
   function handleChange(value: any) {
     console.log(`Selected: ${value}`);
   }
-  const deciceList = ['Máy siêu âm', 'Máy nội sôi', 'Máy X-Quang'];
+  const deciceList = ['Kiosk','Display counter'];
   const children = [];
   for (let i = 0; i < deciceList.length; i++) {
-    children.push(<Option key={i}>{deciceList[i]}</Option>);
+    children.push(<Option key={deciceList[i]}>{deciceList[i]}</Option>);
+  }
+  const onFinish = async(values: any) => {
+    let device : IDevice = {
+      ...values,
+      trangThaiHoatDong: true,
+      trangThaiKetNoi :true
+    }
+    let index = devices?.findIndex(item=>item.maThietBi === device.maThietBi)
+    if(index!==-1){
+      Swal.fire({
+        title: "Error!",
+        text: "Mã thiết bị đã tồn tại",
+        icon: "error",
+        confirmButtonText: "Xác nhận",
+      });
+      return
+    }
+    DeviceServices.addNewDevice(device)
+    Swal.fire({
+      title: "Success!",
+      text: "Thêm thiết bị mới thành công",
+      icon: "success",
+      confirmButtonText: "Xác nhận",
+    });
+  let ipv4 = await fetchIP()
+    LogServices.addNewLog({
+      action : `Thêm thiết bị mới ${device.tenThietBi}`,
+      actionTime : new Date(),
+      ip :ipv4.IPv4,
+      tenDangNhap : me ?  me.tenDangNhap : 'Unknown'
+    })
+  }
+  const handleCancel = ()=>{
+    history('/devices-management')
   }
   return (
     <div className='content pl-[24px] pt-[29px] pr-[100px] relative'>
@@ -26,7 +85,10 @@ const AddDevice = () => {
         <h3 className='text-xl font-bold leading-[30px] text-primary'>
           Thông tin thiết bị
         </h3>
-        <Form className=''>
+        <Form
+         name="nest-messages"
+          onFinish={onFinish}
+          form={form}>
           <Row gutter={{ lg: 32 }} >
             <Col span={12} xs={24} xl={12} >
               <Form.Item
@@ -35,8 +97,12 @@ const AddDevice = () => {
                 rules={[
                   {
                     required: true,
-                    message: 'Please input your device number!',
+                    message: 'Vui lòng nhập mã thiết bị!',
                   },
+                  {
+                    pattern: new RegExp(/^KIO_[0-9]{3}$/),
+                    message : "Mã thiết bị có định dạng KIO_xxx vd: KIO_001"
+                  }
                 ]}
               >
                 <Input
@@ -52,7 +118,7 @@ const AddDevice = () => {
                 rules={[
                   {
                     required: true,
-                    message: 'Please input your type of device !',
+                    message: 'Vui lòng chọn loại thiết bị!',
                   },
                 ]}
               >
@@ -74,7 +140,7 @@ const AddDevice = () => {
                 rules={[
                   {
                     required: true,
-                    message: 'Please input your device name!',
+                    message: 'Vui lòng nhập tên thiết bị!',
                   },
                 ]}
               >
@@ -91,7 +157,7 @@ const AddDevice = () => {
                 rules={[
                   {
                     required: true,
-                    message: 'Please input your user name!',
+                    message: 'Vui lòng nhập tên đăng nhập!',
                   },
                 ]}
               >
@@ -108,8 +174,12 @@ const AddDevice = () => {
                 rules={[
                   {
                     required: true,
-                    message: 'Please input your IP Address!',
+                    message: 'Vui lòng nhập địa chỉ Ip của thiết bị!',
                   },
+                  {
+                    pattern: new RegExp(/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/gm),
+                    message : 'Ip sai định dạng!'
+                  }
                 ]}
               >
                 <Input
@@ -125,7 +195,7 @@ const AddDevice = () => {
                 rules={[
                   {
                     required: true,
-                    message: 'Please input your password!',
+                    message: 'Vui lòng nhập mật khẩu!',
                   },
                 ]}
               >
@@ -146,10 +216,15 @@ const AddDevice = () => {
                   },
                 ]}
               >
-                <Input
-                  className='w-full h-11 rounded-lg hover:border-primary'
-                  placeholder='Nhập dịch vụ sử dụng'
-                />
+                <Select
+                  mode='multiple'
+                  size='large'
+                  className='w-full'
+                >
+                  {services &&  services.map(item=>{
+                    return <Option key={item.maDichVu}>{item.tenDichVu}</Option>
+                  })}
+                </Select>
               </Form.Item>
             </Col>
           </Row>
@@ -158,18 +233,18 @@ const AddDevice = () => {
             Là trường thông tin bắt buộc
           </span>
           <div className='flex justify-center items-center mt-6 gap-x-8'>
-            <button
-              type='submit'
-              className='w-[160px] text-primary px-6 py-[13px] rounded-lg font-bold text-base outline-none border border-solid border-primary-400 bg-white leading-[22px]'
-            >
-              Hủy bỏ
-            </button>
-            <button
-              type='submit'
-              className='w-[160px] text-white px-6 py-[13px] rounded-lg font-bold text-base outline-none border border-solid border-primary-400 bg-primary-400 leading-[22px]'
-            >
-              Thêm thiết bị
-            </button>
+          <Button
+                    className='custom w-[147px] text-primary rounded-lg font-bold text-base outline-none border border-solid border-primary-400 bg-white btn-cancel'
+                    onClick={handleCancel}
+                  >
+                    Hủy bỏ
+                  </Button>
+                  <Button
+                    htmlType='submit'
+                    className='custom w-[147px] text-white rounded-lg font-bold text-base outline-none border border-solid border-primary-400 bg-primary-400 '
+                  >
+                    Thêm thiết bị
+                  </Button>
           </div>
         </Form>
       </div>

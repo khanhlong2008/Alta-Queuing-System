@@ -1,222 +1,273 @@
-import React, { useEffect } from 'react';
-import { Row, Col, Form, Input, Select } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Row, Col, Form, Input, Select, TimePicker, Button } from 'antd';
 import { CaretDownOutlined } from '@ant-design/icons';
 import './style.scss';
-
+import DeviceServices from "../../../../db/services/device.services";
+import IDevice from "../../../../db/types/device.type";
+import ServiceServices from "../../../../db/services/service.services";
+import IService from "../../../../db/types/service.type";
+import Swal from "sweetalert2";
+import { useAppSelector} from "../../../../app/hooks";
+import { selectUser } from "../../../../features/user/userSlice";
+import LogServices from "../../../../db/services/log_system.services";
+import { fetchIP } from "../../../../db/others/ipaddress";
+import { useNavigate, useParams } from 'react-router-dom';
 const UpdateDevice = () => {
   const { Option } = Select;
+  const [form] = Form.useForm();
+  const [devices, setDevices] = useState<IDevice[]>([])
+  const [services, setServices] = useState<IService[]>([])
+  const [deviceUpdate, setDeviceUpdate] = useState<IService>()
+  const {id} = useParams()
+  const history = useNavigate()
+  const me = useAppSelector(selectUser)
+  useEffect(() => {
+    //Data demo
+    (async()=>{
+      let data = await DeviceServices.getDevices()
+      let index = data.findIndex(item=>item.id === id)
+      if(index===-1){
+        history('/devices-management')
+      }else{
+        setDevices(data)
+        let services = await ServiceServices.getServices()
+        setServices(services)
+        let temp = {...data[index]}
+        setDeviceUpdate(temp as any)
+        form.setFieldsValue({
+          maThietBi : temp.maThietBi,
+          tenThietBi : temp.tenThietBi,
+          tenDangNhap : temp.tenDangNhap,
+          ip : temp.ip,
+          loaiThietBi : temp.loaiThietBi,
+          matKhau: temp.matKhau,
+          dichVuSuDung : temp.dichVuSuDung
+        });
+      } 
+    })()
+  }, []);
+  
   function handleChange(value: any) {
     console.log(`Selected: ${value}`);
   }
-  const deciceList = ['Máy siêu âm', 'Máy nội sôi', 'Máy X-Quang'];
+  const deciceList = ['Kiosk','Display counter'];
   const children = [];
   for (let i = 0; i < deciceList.length; i++) {
-    children.push(<Option key={i}>{deciceList[i]}</Option>);
+    children.push(<Option key={deciceList[i]}>{deciceList[i]}</Option>);
   }
-
-  const departmentList = [
-    'Khám tim mach',
-    'Khám sản phụ khoa',
-    'Khám răng hàm mặt',
-    'Khám mắt',
-    'Khám tai mũi họng',
-    'Khám da liễu',
-    'Khám tiết niệu',
-    'Khám thần kinh',
-    'Khám hô hấp',
-    'Khám tổng quát',
-  ];
-  const childrens = [];
-  for (let i = 0; i < departmentList.length; i++) {
-    childrens.push(<Option key={i}>{departmentList[i]}</Option>);
-  }
-  function handleChangeSelected(value: any) {
-    console.log(`Selected: ${value}`);
-  }
-  // View data
-  const [form] = Form.useForm();
-  useEffect(() => {
-    form.setFieldsValue({
-      maThietBi: 'KIO_101',
-      loaiThietBi: ['Máy siêu âm'],
-      tenThietBi: 'Máy siêu âm',
-      tenDangNhap: 'Linhkyo011',
-      ip: '128.172.308',
-      matKhau: 'CMS',
-      dichVuSuDung: [
-        'Khám tim mach',
-        'Khám sản phụ khoa',
-        'Khám răng hàm mặt',
-        'Khám mắt',
-      ],
+  const onFinish = async(values: any) => {
+    let device : IDevice = {
+      ...values,
+      trangThaiHoatDong: true,
+      trangThaiKetNoi :true,
+      id:id
+    }
+    let index = devices?.filter(item=>item.id !== deviceUpdate?.id ).findIndex(item=>item.maThietBi === device.maThietBi)
+    if(index !== -1){
+      Swal.fire({
+        title: "Error!",
+        text: "Mã thiết bị đã tồn tại",
+        icon: "error",
+        confirmButtonText: "Xác nhận",
+      });
+      return
+    }
+    DeviceServices.updateDevice(device)
+    Swal.fire({
+      title: "Success!",
+      text: "Cập nhật thiết bị thành công",
+      icon: "success",
+      confirmButtonText: "Xác nhận",
     });
-  }, []);
-  return (
-    <div className='content pl-[24px] pt-[29px] pr-[100px] lg:pr-2 relative'>
-      <div className='path text-primary-gray-light-400 font-bold text-xl leading-[30px] mb-4'>
-        Thiết bị &gt; Danh sách thiết bị &gt;{' '}
-        <span className='text-primary-500 text-xl leading-[30px] font-bold'>
-          Cập nhật thiết bị
-        </span>
-      </div>
-      <h2 className='text-primary-500 text-2xl font-bold'>Quản lý thiết bị</h2>
-      <div className='py-2 px-6 rounded-2xl shadow-[2px_2px_8px_rgba(232, 239, 244, 0.8)]'>
-        {/* <h3 className='text-xl font-bold leading-[30px] text-primary'>
-          Thông tin thiết bị
-        </h3> */}
-        <Form className='' form={form}>
-          <Row gutter={{ lg: 32 }}>
-            <Col span={12} xs={24} xl={12}>
-              <Form.Item
-                label='Mã thiết bị'
-                name='maThietBi'
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please input your device number!',
-                  },
-                ]}
-              >
-                <Input
-                  className='w-full h-11 rounded-lg hover:border-primary'
-                  placeholder='Nhập mã thiết bị'
-                />
-              </Form.Item>
-            </Col>
-            <Col span={12} xs={24} xl={12}>
-              <Form.Item
-                label='Loại thiết bị'
-                name='loaiThietBi'
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please input your type of device !',
-                  },
-                ]}
-              >
-                <Select
-                  suffixIcon={<CaretDownOutlined />}
-                  size={'large'}
-                  placeholder='Chọn loại thiết bị'
-                  onChange={handleChange}
-                  className='w-full h-11'
-                >
-                  {children}
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={12} xs={24} xl={12}>
-              <Form.Item
-                label='Tên thiết bị'
-                name='tenThietBi'
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please input your device name!',
-                  },
-                ]}
-              >
-                <Input
-                  className='w-full h-11 rounded-lg hover:border-primary'
-                  placeholder='Nhập tên thiết bị'
-                />
-              </Form.Item>
-            </Col>
-            <Col span={12} xs={24} xl={12}>
-              <Form.Item
-                label='Tên đăng nhập'
-                name='tenDangNhap'
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please input your user name!',
-                  },
-                ]}
-              >
-                <Input
-                  className='w-full h-11 rounded-lg hover:border-primary'
-                  placeholder='Nhập tài khoản'
-                />
-              </Form.Item>
-            </Col>
-            <Col span={12} xs={24} xl={12}>
-              <Form.Item
-                label='Địa chỉ IP'
-                name='ip'
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please input your IP Address!',
-                  },
-                ]}
-              >
-                <Input
-                  className='w-full h-11 rounded-lg hover:border-primary'
-                  placeholder='Nhập địa chỉ IP'
-                />
-              </Form.Item>
-            </Col>
-            <Col span={12} xs={24} xl={12}>
-              <Form.Item
-                label='Mật khẩu'
-                name='matKhau'
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please input your password!',
-                  },
-                ]}
-              >
-                <Input
-                  className='w-full h-11 rounded-lg hover:border-primary'
-                  placeholder='Nhập mật khẩu'
-                />
-              </Form.Item>
-            </Col>
-            <Col span={24}>
-              <Form.Item
-                label='Dịch vụ sử dụng'
-                name='dichVuSuDung'
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please input your current service!',
-                  },
-                ]}
-              >
-                <Select
-                  mode='multiple'
-                  size='large'
-                  onChange={handleChangeSelected}
-                  className='w-full'
-                >
-                  {childrens}
-                </Select>
-              </Form.Item>
-            </Col>
-          </Row>
-          <span className='text-sm font-normal leading-5 text-primary-gray-300'>
-            <strong className='text-primary-red'>* </strong>
-            Là trường thông tin bắt buộc
+  let ipv4 = await fetchIP()
+    LogServices.addNewLog({
+      action : `Cập nhật thiết bị ${device.tenThietBi}`,
+      actionTime : new Date(),
+      ip :ipv4.IPv4,
+      tenDangNhap : me ?  me.tenDangNhap : 'Unknown'
+    })
+  }
+  const handleCancel = ()=>{
+    history('/devices-management')
+  }
+    return (
+      <div className='content pl-[24px] pt-[29px] pr-[100px] relative'>
+        <div className='path text-primary-gray-light-400 font-bold text-xl leading-[30px] mb-4'>
+          Thiết bị &gt; Danh sách thiết bị &gt;{' '}
+          <span className='text-primary-500 text-xl leading-[30px] font-bold'>
+            Cập nhật thiết bị
           </span>
-          <div className='flex justify-center items-center mt-6 gap-x-8'>
-            <button
-              type='submit'
-              className='w-[160px] text-primary px-6 py-[13px] rounded-lg font-bold text-base outline-none border border-solid border-primary-400 bg-white leading-[22px]'
-            >
-              Hủy bỏ
-            </button>
-            <button
-              type='submit'
-              className='w-[160px] text-white px-6 py-[13px] rounded-lg font-bold text-base outline-none border border-solid border-primary-400 bg-primary-400 leading-[22px]'
-            >
-              Cập nhật
-            </button>
-          </div>
-        </Form>
+        </div>
+        <h2 className='text-primary-500 text-2xl font-bold'>Quản lý thiết bị</h2>
+        <div className='py-2 px-6 rounded-2xl add-device shadow-[2px_2px_8px_rgba(232, 239, 244, 0.8)]'>
+          <h3 className='text-xl font-bold leading-[30px] text-primary'>
+            Thông tin thiết bị
+          </h3>
+          <Form
+           name="nest-messages"
+            onFinish={onFinish}
+            form={form}>
+            <Row gutter={{ lg: 32 }} >
+              <Col span={12} xs={24} xl={12} >
+                <Form.Item
+                  label='Mã thiết bị'
+                  name='maThietBi'
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập mã thiết bị!',
+                    },
+                    {
+                      pattern: new RegExp(/^KIO_[0-9]{3}$/),
+                      message : "Mã thiết bị có định dạng KIO_xxx vd: KIO_001"
+                    }
+                  ]}
+                >
+                  <Input
+                    className='w-full h-11 rounded-lg hover:border-primary'
+                    placeholder='Nhập mã thiết bị'
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={12} xs={24} xl={12} >
+                <Form.Item
+                  label='Loại thiết bị'
+                  name='loaiThietBi'
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Vui lòng chọn loại thiết bị!',
+                    },
+                  ]}
+                >
+                  <Select
+                    suffixIcon={<CaretDownOutlined />}
+                    size={'large'}
+                    placeholder='Chọn loại thiết bị'
+                    onChange={handleChange}
+                    className='w-full h-11'
+                  >
+                    {children}
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={12} xs={24} xl={12} >
+                <Form.Item
+                  label='Tên thiết bị'
+                  name='tenThietBi'
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập tên thiết bị!',
+                    },
+                  ]}
+                >
+                  <Input
+                    className='w-full h-11 rounded-lg hover:border-primary'
+                    placeholder='Nhập tên thiết bị'
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={12} xs={24} xl={12} >
+                <Form.Item
+                  label='Tên đăng nhập'
+                  name='tenDangNhap'
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập tên đăng nhập!',
+                    },
+                  ]}
+                >
+                  <Input
+                    className='w-full h-11 rounded-lg hover:border-primary'
+                    placeholder='Nhập tài khoản'
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={12} xs={24} xl={12} >
+                <Form.Item
+                  label='Địa chỉ IP'
+                  name='ip'
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập địa chỉ Ip của thiết bị!',
+                    },
+                    {
+                      pattern: new RegExp(/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/gm),
+                      message : 'Ip sai định dạng!'
+                    }
+                  ]}
+                >
+                  <Input
+                    className='w-full h-11 rounded-lg hover:border-primary'
+                    placeholder='Nhập địa chỉ IP'
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={12} xs={24} xl={12} >
+                <Form.Item
+                  label='Mật khẩu'
+                  name='matKhau'
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Vui lòng nhập mật khẩu!',
+                    },
+                  ]}
+                >
+                  <Input
+                    className='w-full h-11 rounded-lg hover:border-primary'
+                    placeholder='Nhập mật khẩu'
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={24}>
+                <Form.Item
+                  label='Dịch vụ sử dụng'
+                  name='dichVuSuDung'
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please input your current service!',
+                    },
+                  ]}
+                >
+                  <Select
+                    mode='multiple'
+                    size='large'
+                    className='w-full'
+                  >
+                    {services &&  services.map(item=>{
+                      return <Option key={item.maDichVu}>{item.tenDichVu}</Option>
+                    })}
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+            <span className='text-sm font-normal leading-5 text-primary-gray-300'>
+              <strong className='text-primary-red'>* </strong>
+              Là trường thông tin bắt buộc
+            </span>
+            <div className='flex justify-center items-center mt-6 gap-x-8'>
+            <Button
+                    className='custom w-[147px] text-primary rounded-lg font-bold text-base outline-none border border-solid border-primary-400 bg-white btn-cancel'
+                    onClick={handleCancel}
+                  >
+                    Hủy bỏ
+                  </Button>
+                  <Button
+                    htmlType='submit'
+                    className='custom w-[147px] text-white rounded-lg font-bold text-base outline-none border border-solid border-primary-400 bg-primary-400 '
+                  >
+                    Cập nhật
+                  </Button>
+            </div>
+          </Form>
+        </div>
       </div>
-    </div>
-  );
+    );
 };
 
 export default UpdateDevice;

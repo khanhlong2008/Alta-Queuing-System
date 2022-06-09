@@ -7,7 +7,7 @@ import GearLevelDevice from '../pages/User/GearLevelDevice';
 import ViewDeviceCounte from '../pages/User/ViewDeviceCounte';
 import ViewDeviceMain from '../pages/User/ViewDeviceMain';
 import Page404 from '../components/Page404';
-// import FillImformation from '../pages/Interaction/PopupImformation';
+// Components
 import SettingGearDevice from '../pages/User/SettingGearLevelDevice';
 import SettingViewDevice from '../pages/User/SettingViewDeviceCounte';
 import SettingDisplayDevice from '../pages/User/SettingDisplayDevice';

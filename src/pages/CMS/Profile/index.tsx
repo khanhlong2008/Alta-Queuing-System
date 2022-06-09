@@ -2,28 +2,103 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col, Form, Input, Upload, Button } from 'antd';
 import { CameraOutlined } from '@ant-design/icons';
 import './style.scss';
+import UserService from "../../../db/services/user.services";
+import RoleService from "../../../db/services/role.services";
+import {dbFileStorage} from "../../../db/firebase";
+
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import {  useAppSelector,useAppDispatch } from "../../../app/hooks";
+import { selectUser,updateUser } from "../../../features/user/userSlice"
+import moment from "moment-timezone";
+import Swal from "sweetalert2";
 type LayoutType = Parameters<typeof Form>[0]['layout'];
 
 const Profile = () => {
   const [form] = Form.useForm();
+  const me = useAppSelector(selectUser)
+  const [block, setBlock] = useState(false)
+  const dispatch = useAppDispatch()
   const [formLayout, setFormLayout] = useState<LayoutType>('vertical');
-  const normFile = (e: any) => {
-    console.log('Upload event:', e);
-    if (Array.isArray(e)) {
-      return e;
+  const handleImage = async(e: any) => {
+    e.preventDefault();
+    let pickedFile;
+    if (e.target.files && e.target.files.length > 0) {
+      pickedFile = e.target.files[0];
+      setBlock(true)
+      if(pickedFile){
+        await uploadLoadAvatar(pickedFile)
+        setBlock(false)
+      }else{
+        Swal.fire({
+          title: "Error!",
+          text: "Có lỗi xảy ra khi upload. Vui lòng thử lại!",
+          icon: "error",
+          confirmButtonText: "Xác nhận",
+        });
+        setBlock(false)
+      }
     }
-    return e && e.fileList;
   };
+const uploadLoadAvatar = async (singleImage : any) => {
+  const storageRef = ref(dbFileStorage,moment().format('DDMMYYYHHmmss'));
+  const uploadTask = uploadBytesResumable(storageRef, singleImage,{
+    contentType: 'image/*',
+  });
+  uploadTask.on(
+    'state_changed',
+    (snapshot: any) => {
+      const progress =
+        (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+    },
+    (error: any) => {
+      Swal.fire({
+        title: "Error!",
+        text: "Có lỗi xảy ra khi upload. Vui lòng thử lại!",
+        icon: "error",
+        confirmButtonText: "Xác nhận",
+      });
+    },
+    () => {
+      // Upload completed successfully, now we can get the download URL
+      getDownloadURL(uploadTask.snapshot.ref).then(async downloadURL => {
+        if (me) {
+          await UserService.updateUser({
+           ...me,
+            avatar: downloadURL,
+          })
+          Swal.fire({
+            title: "Error!",
+            text: "Cập nhật hình thành công!",
+            icon: "success",
+            confirmButtonText: "Xác nhận",
+          });
+          dispatch(
+            updateUser({
+              ...me,
+              avatar: downloadURL,
+            }),
+          );
+        }
+      });
+    },
+  );
+};
+  
   useEffect(() => {
-    form.setFieldsValue({
-      username: 'Nguyễn Khánh Long',
-      phoneNumber: '0386060788',
-      email: 'khanhlong11a1@gmail.com',
-      loginName: 'khanhlong2008',
-      password: 'khanhlong2008@2000',
-      role: 'Inter Front-End Developer',
-    });
-  }, []);
+    (async()=>{
+      let roles = await RoleService.getRoles()
+      let role = roles.find(item=>item.id === me?.vaiTro)
+      form.setFieldsValue({
+        username: me?.hoTen,
+        phoneNumber: me?.soDienThoai,
+        email: me?.email,
+        loginName: me?.tenDangNhap,
+        password: me?.matKhau || '123123123',
+        role: role?.tenVaiTro,
+      });
+    })()
+    
+  }, [me]);
   const onFormLayoutChange = ({ layout }: { layout: LayoutType }) => {
     setFormLayout(layout);
   };
@@ -45,23 +120,26 @@ const Profile = () => {
                 <div className='lg:w-40 lg:h-40 w-[248px] h-[248px] text-center relative'>
                   <img
                     className='w-full h-full object-cover rounded-[318px]'
-                    src='https://i.pinimg.com/236x/57/dc/75/57dc75dde00479a9668945fa251ba92b.jpg'
+                    src={me?.avatar}
                     alt='avatar'
                   />
-                  <div className='absolute w-11 h-11 -bottom-2 left-3/4 -translate-x-3/4 bg-primary border-2 border-solid border-white flex justify-center items-center rounded-full cursor-pointer'>
-                  <Form.Item
-                    name='upload'
-                    valuePropName='fileList'
-                    getValueFromEvent={normFile}
+                  <div
+                    className='upload absolute w-11 h-11 -bottom-2 left-3/4 -translate-x-3/4 bg-primary border-2 border-solid border-white flex justify-center items-center rounded-full cursor-pointer'
                   >
-                    <Upload name='logo' action='/upload.do' listType='picture'>
-                      <Button icon={<CameraOutlined />}></Button>
-                    </Upload>
-                  </Form.Item>
-                </div>
+                    <label className='absolute w-full h-full top-[5%]'>
+                      <CameraOutlined className='text-2xl text-white'/>
+                    </label>
+                    <input
+                      className='absolute z-9999 opacity-0 cursor-pointer'
+                      type='file'
+                      disabled={block}
+                      onChange={handleImage}
+                    />
+                  </div>
+                  
                 </div>
                 <h2 className='mt-5 text-center text-2xl font-bold leading-9 text-primary-gray-500'>
-                  Lê Huỳnh Ái Vân
+                  {me?.hoTen}
                 </h2>
               </div>
             </Col>

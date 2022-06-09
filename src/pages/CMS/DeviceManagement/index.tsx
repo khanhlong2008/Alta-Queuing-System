@@ -1,9 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Input, Select } from 'antd';
 import { Table } from 'antd';
 import { CaretDownOutlined } from '@ant-design/icons';
 import './style.scss';
 import { Link } from 'react-router-dom';
+import DeviceServices from '../../../db/services/device.services';
+import ServiceServices from '../../../db/services/service.services';
+
+import IDevice from '../../../db/types/device.type';
 type Props = {};
 
 const columns = [
@@ -24,7 +28,7 @@ const columns = [
   },
   {
     title: 'Trạng thái hoạt động',
-    dataIndex: 'trangThai',
+    dataIndex: 'trangThaiHoatDong',
     width: '18%',
     render: (trangThai: any) =>
       trangThai ? (
@@ -41,7 +45,7 @@ const columns = [
   },
   {
     title: 'Trạng thái kết nối',
-    dataIndex: 'ketNoi',
+    dataIndex: 'trangThaiKetNoi',
     width: '15%',
     render: (ketNoi: any) =>
       ketNoi ? (
@@ -78,7 +82,7 @@ const columns = [
     render: (item: any, record: any) => (
       <Link
         className='text-blue-500 underline'
-        to={`/devices-management/detail/${record.maThietBi}`}
+        to={`/devices-management/detail/${record.id}`}
       >
         Chi tiết
       </Link>
@@ -90,7 +94,7 @@ const columns = [
     render: (item: any, record: any) => (
       <Link
         className='text-blue-500 underline'
-        to={`/devices-management/update/${record.maThietBi}`}
+        to={`/devices-management/update/${record.id}`}
       >
         Cập nhật
       </Link>
@@ -107,40 +111,153 @@ const DeviceManager = (props: Props) => {
     },
     loading: false,
   });
+  const [devices, setDevices] = useState<IDevice[]>([])
+  const searchRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const [key, setKey]= useState('')
+  const [statusConnect, setStatusConnect]= useState('all')
+  const [statusActivity, setStatusActivity]= useState('all')
+
+
   const { Option } = Select;
-  function handleChange(value: any) {
-    console.log(`Selected: ${value}`);
-  }
 
   useEffect(() => {
     //Data demo
-    const data = [];
-    for (let index = 0; index < 50; index++) {
-      let temp = {
-        key: index,
-        maThietBi: `KIO_0${index}`,
-        tenThietBi: `Kiosk ${index}`,
-        ip: '192.168.1.10',
-        trangThai: index % 2 === 0 ? true : false,
-        ketNoi: index % 2 === 0 ? true : false,
-        dichVuSuDung: [
-          'Khám tim mạch',
-          'Khám Sản - Phụ khoa',
-          'Khám răng hàm mặt',
-          'Khám tai mũi họng',
-          'Khám hô hấp',
-          'Khám tổng quát',
-        ],
-      };
-      data.push(temp);
-    }
-
-    setTable({ ...table, data: data as any });
+    (async()=>{
+      let data = await DeviceServices.getDevices()
+      let services = await ServiceServices.getServices()
+      data = data.map(item=>{
+        let DSDV = item.dichVuSuDung.map((dv)=>{
+          let service = services.find(ser=>ser.maDichVu === dv)
+          return service?.tenDichVu
+        })
+      return {
+        ...item,
+        key : item.id,
+        dichVuSuDung: DSDV as any
+      }
+    })
+      setDevices(data)
+      setTable({ ...table, data: data as any });
+      })()
   }, []);
 
   const handlePanigationChange = (current: any) => {
     setTable({ ...table, pagination: { ...table.pagination, current } });
   };
+
+  const xoa_dau = (str:string) => {
+    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+    str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+    str = str.replace(/đ/g, "d");
+    str = str.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, "A");
+    str = str.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, "E");
+    str = str.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, "I");
+    str = str.replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, "O");
+    str = str.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "U");
+    str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y");
+    str = str.replace(/Đ/g, "D");
+    return str;
+}
+
+const handleKeyWordChange  = (e: React.FormEvent<HTMLInputElement>)=>{
+  let value= e.currentTarget.value
+  setKey(value)
+  if(searchRef){
+    clearInterval(searchRef.current as any)
+  }
+  searchRef.current = setTimeout(() => {
+   let temp = devices.filter(item=>
+    xoa_dau(item.maThietBi.toLocaleLowerCase()).includes(xoa_dau(value.toLocaleLowerCase()))
+    ||  xoa_dau(item.ip.toLocaleLowerCase()).includes(xoa_dau(value.toLocaleLowerCase()))
+    || xoa_dau(item.tenThietBi.toLocaleLowerCase()).includes(xoa_dau(value.toLocaleLowerCase())))
+
+    setTable({...table,data : temp as any})
+    clearInterval(searchRef.current as any)
+  }, 700);
+}
+
+function handleStatusConnectChange(value: any) {
+  let trangThaiHoatDong = statusActivity === 'all' ? '' : (statusActivity === 'online' ? true: false)
+  let active = value === 'online' ? true : false
+
+  setStatusConnect(value)
+  if(trangThaiHoatDong === ''){
+      if(value === 'all'){
+        let temp = devices.filter(item=>
+        (xoa_dau(item.maThietBi.toLocaleLowerCase()).includes(xoa_dau(key.toLocaleLowerCase()))
+         ||  xoa_dau(item.tenThietBi.toLocaleLowerCase()).includes(xoa_dau(key.toLocaleLowerCase()))
+         || xoa_dau(item.ip.toLocaleLowerCase()).includes(xoa_dau(key.toLocaleLowerCase()))))
+         setTable({...table,data : temp as any})
+      }else{
+        let temp = devices.filter(item=>
+          (xoa_dau(item.maThietBi.toLocaleLowerCase()).includes(xoa_dau(key.toLocaleLowerCase()))
+          ||  xoa_dau(item.tenThietBi.toLocaleLowerCase()).includes(xoa_dau(key.toLocaleLowerCase()))
+          || xoa_dau(item.ip.toLocaleLowerCase()).includes(xoa_dau(key.toLocaleLowerCase())))
+          && item.trangThaiKetNoi === active)
+          setTable({...table,data : temp as any})
+      }
+    return;
+  }else{
+    if(value=== 'all'){
+      let temp = devices.filter(item=>
+        (xoa_dau(item.maThietBi.toLocaleLowerCase()).includes(xoa_dau(key.toLocaleLowerCase()))
+        ||  xoa_dau(item.tenThietBi.toLocaleLowerCase()).includes(xoa_dau(key.toLocaleLowerCase()))
+        || xoa_dau(item.ip.toLocaleLowerCase()).includes(xoa_dau(key.toLocaleLowerCase())))
+        && item.trangThaiHoatDong === trangThaiHoatDong)
+        setTable({...table,data : temp as any})
+    }else{
+      let temp = devices.filter(item=>
+        (xoa_dau(item.maThietBi.toLocaleLowerCase()).includes(xoa_dau(key.toLocaleLowerCase()))
+        ||  xoa_dau(item.tenThietBi.toLocaleLowerCase()).includes(xoa_dau(key.toLocaleLowerCase()))
+        || xoa_dau(item.ip.toLocaleLowerCase()).includes(xoa_dau(key.toLocaleLowerCase())))
+        && item.trangThaiHoatDong === trangThaiHoatDong && item.trangThaiKetNoi === active)
+        setTable({...table,data : temp as any})
+    }
+  }
+}
+function handleStatusActivityChange(value: any) {
+  let trangThaiKetNoi = statusConnect === 'all' ? '' : (statusConnect === 'online' ? true: false)
+  let active = value === 'online' ? true : false
+
+  setStatusActivity(value)
+  if(trangThaiKetNoi === ''){
+      if(value === 'all'){
+        let temp = devices.filter(item=>
+        (xoa_dau(item.maThietBi.toLocaleLowerCase()).includes(xoa_dau(key.toLocaleLowerCase()))
+         ||  xoa_dau(item.tenThietBi.toLocaleLowerCase()).includes(xoa_dau(key.toLocaleLowerCase()))
+         || xoa_dau(item.ip.toLocaleLowerCase()).includes(xoa_dau(key.toLocaleLowerCase()))))
+         setTable({...table,data : temp as any})
+      }else{
+        let temp = devices.filter(item=>
+          (xoa_dau(item.maThietBi.toLocaleLowerCase()).includes(xoa_dau(key.toLocaleLowerCase()))
+          ||  xoa_dau(item.tenThietBi.toLocaleLowerCase()).includes(xoa_dau(key.toLocaleLowerCase()))
+          || xoa_dau(item.ip.toLocaleLowerCase()).includes(xoa_dau(key.toLocaleLowerCase())))
+          && item.trangThaiHoatDong === active)
+          setTable({...table,data : temp as any})
+      }
+    return;
+  }else{
+    if(value === 'all'){
+      let temp = devices.filter(item=>
+        (xoa_dau(item.maThietBi.toLocaleLowerCase()).includes(xoa_dau(key.toLocaleLowerCase()))
+        ||  xoa_dau(item.tenThietBi.toLocaleLowerCase()).includes(xoa_dau(key.toLocaleLowerCase()))
+        || xoa_dau(item.ip.toLocaleLowerCase()).includes(xoa_dau(key.toLocaleLowerCase())))
+        && item.trangThaiKetNoi === trangThaiKetNoi)
+        setTable({...table,data : temp as any})
+    }else{
+      let temp = devices.filter(item=>
+        (xoa_dau(item.maThietBi.toLocaleLowerCase()).includes(xoa_dau(key.toLocaleLowerCase()))
+        ||  xoa_dau(item.tenThietBi.toLocaleLowerCase()).includes(xoa_dau(key.toLocaleLowerCase()))
+        || xoa_dau(item.ip.toLocaleLowerCase()).includes(xoa_dau(key.toLocaleLowerCase())))
+        && item.trangThaiKetNoi === trangThaiKetNoi && item.trangThaiHoatDong === active)
+        setTable({...table,data : temp as any})
+    }
+  }
+}
 
   return (
     <div className='content pl-[24px] pt-[29px] pr-[100px] relative device lg:pr-1'>
@@ -161,8 +278,8 @@ const DeviceManager = (props: Props) => {
             </span>
             <Select
               suffixIcon={<CaretDownOutlined />}
-              onChange={handleChange}
-              defaultValue={'Tất cả'}
+              onChange={handleStatusActivityChange}
+              defaultValue={'all'}
               className='w-[300px] h-11 text-primary-gray-400'
             >
               <Option value='all'>Tất cả</Option>
@@ -176,13 +293,13 @@ const DeviceManager = (props: Props) => {
             </span>
             <Select
               suffixIcon={<CaretDownOutlined />}
-              onChange={handleChange}
+              onChange={handleStatusConnectChange}
               defaultValue={'Tất cả'}
               className='w-[300px] h-11 text-primary-gray-400'
             >
               <Option value='all'>Tất cả</Option>
-              <Option value='connect'>Kết nối</Option>
-              <Option value='disconnect'>Mất kết nối</Option>
+              <Option value='online'>Kết nối</Option>
+              <Option value='offline'>Mất kết nối</Option>
             </Select>
           </div>
         </div>
@@ -192,7 +309,7 @@ const DeviceManager = (props: Props) => {
           </span>
           <Input.Search
             placeholder='Nhập từ khóa'
-            onSearch={value => console.log(value)}
+            onChange={handleKeyWordChange}
             className='w-[300px] h-11 text-primary-gray-400'
           />
         </div>

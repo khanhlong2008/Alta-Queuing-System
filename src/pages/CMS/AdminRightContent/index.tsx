@@ -4,12 +4,22 @@ import 'react-circular-progressbar/dist/styles.css';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './style.scss';
+import IProgression from "../../../db/types/progression.type";
+import IService from "../../../db/types/service.type";
+import IDevice from "../../../db/types/device.type";
 const values = [
   { fill: '#FF7506', percent: 60 },
   { fill: '#7E7D88', percent: 40 },
   { fill: '#35C75A', percent: 15 },
 ];
-function AdminRightContent() {
+type Props = {
+  services : IService[]
+  progressions: IProgression[]
+  devices: IDevice[]
+}
+function AdminRightContent(props: Props) {
+  const {services,devices,progressions} = props
+  console.log(progressions)
   const [value, onChange] = useState(new Date());
   return (
     <div className='right__content w-1/3 pt-6 ml-2 h-screen max-h-screen xl:pt-16'>
@@ -43,7 +53,7 @@ function AdminRightContent() {
             </div>
             <div className='name'>
               <div className='number font-bold text-lg text-[#535261] xl:text-right'>
-                4.221
+                {devices.length}
               </div>
               <span className='text-sm text-[#FF7506] font-medium'>
                 <i className='fa fa-desktop'></i> Thiết bị
@@ -90,7 +100,7 @@ function AdminRightContent() {
               ))}
             </div>
             <div className='name'>
-              <div className='number font-bold text-lg text-[#535261] xl:text-right'>276</div>
+              <div className='number font-bold text-lg text-[#535261] xl:text-right'>{services.length}</div>
               <span className='text-sm text-[#0640ff] font-medium'>
                 <i className='fa fa-desktop'></i> Dịch vụ
               </span>
@@ -137,7 +147,7 @@ function AdminRightContent() {
             </div>
             <div className='name'>
               <div className='number font-bold text-lg text-[#535261] xl:text-right'>
-                4.221
+              {progressions.length}
               </div>
               <span className='text-sm text-[#35C75A] font-medium'>
                 <i className='fa fa-desktop'></i> Cấp số

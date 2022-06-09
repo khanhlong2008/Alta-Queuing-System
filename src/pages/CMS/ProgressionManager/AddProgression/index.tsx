@@ -1,32 +1,36 @@
 import { CaretDownOutlined } from "@ant-design/icons";
 import { Button, Select, Space } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import PopupNumberPrint from "../../../Interaction/PopupNumberPrint";
-
+import PopupImformation from "../../../Interaction/PopupImformation";
+import ServiceServices from "../../../../db/services/service.services";
+import IService from "../../../../db/types/service.type";
+import Swal from "sweetalert2";
 type Props = {};
 
 const { Option } = Select;
 
-const departmentList = [
-  "Khám tim mach",
-  "Khám phụ khoa",
-  "Khám răng",
-  "Khám mắt",
-  "Khám tai mũi họng",
-  "Khám da liễu",
-  "Khám tiết niệu",
-  "Khám thần kinh",
-];
-const children: any[] = [];
-for (let i = 0; i < departmentList.length; i++) {
-  children.push(<Option key={i}>{departmentList[i]}</Option>);
-}
-
 const AddProgression = (props: Props) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [services, setServices] = useState<IService[]>([])
+  const [serviceSelect, setServiceSelect] = useState<IService>()
 
+  useEffect(() => {
+    (async()=>{
+      let data = await ServiceServices.getServices()
+      setServices(data)
+    })()
+  }, []);
   const showModal = () => {
+    if(!serviceSelect){
+      Swal.fire({
+        title: "Error!",
+        text: "Vui lòng chọn dịch vụ",
+        icon: "error",
+        confirmButtonText: "Xác nhận",
+      });
+      return
+    }
     setIsModalVisible(true);
   };
 
@@ -38,7 +42,10 @@ const AddProgression = (props: Props) => {
     setIsModalVisible(false);
   };
   function handleChange(value: any) {
-    console.log(`Selected: ${value}`);
+    let index = services.findIndex(item=>item.maDichVu === value)
+    if(index!== -1){
+      setServiceSelect(services[index])
+    }
   }
   return (
     <div className="content pl-[24px] pt-[29px] pr-[50px] md:mt-3 lg:pr-2 relative">
@@ -61,7 +68,11 @@ const AddProgression = (props: Props) => {
           onChange={handleChange}
           className="w-[400px] mb-20"
         >
-          {children}
+          {services.map((item)=>{
+            return <Option key={item.maDichVu}>
+              {item.tenDichVu}
+            </Option>
+          })}
         </Select>
         <Space align="center" className=" flex justify-center w-full">
           <Link to="/progression-management" className="w-[115px] bg-primary-50 rounded-lg border-primary-400  text-primary border-2  text-center px-[20px] py-[7px] font-bold hover:text-primary hover:border-primary">
@@ -76,7 +87,7 @@ const AddProgression = (props: Props) => {
           </button>
         </Space>
       </div>
-      <PopupNumberPrint handleCancel={handleCancel} handleOk={handleOk} isModalVisible={isModalVisible} showModal={showModal}/>
+      {serviceSelect && <PopupImformation service={serviceSelect} handleCancel={handleCancel} handleOk={handleOk} isModalVisible={isModalVisible} showModal={showModal}/>}
     </div>
   );
 };

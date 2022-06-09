@@ -1,7 +1,37 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Row, Col } from 'antd';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import DeviceServices from '../../../../db/services/device.services';
+import ServiceServices from '../../../../db/services/service.services';
+import IDevice from '../../../../db/types/device.type';
+
+
 const DetailDevice = () => {
+  const [detail, setDetail] = useState<any>()
+  const {id} = useParams()
+  const history = useNavigate()
+
+  useEffect(() => {
+    //Data demo
+    (async()=>{
+      let data = await DeviceServices.getDevices()
+      let index = data.findIndex(item=>item.id === id)
+      if(index===-1){
+        history('/devices-management')
+      }else{
+        let services = await ServiceServices.getServices()
+          let DSDV = data[index].dichVuSuDung.map((dv)=>{
+            let service = services.find(ser=>ser.maDichVu === dv)
+            return service?.tenDichVu
+          })
+        setDetail({
+          ...data[index],
+          dichVuSuDung: DSDV as any
+        })
+      } 
+    })()
+  }, []);
+  
   return (
     <div className='content pl-[24px] pt-[29px] pr-[100px] lg:pr-2 relative'>
       <div className='path text-gray-600 font-bold text-lg mb-11'>
@@ -20,7 +50,7 @@ const DetailDevice = () => {
                 Mã thiết bị:
               </span>
               <p className='font-normal text-base leading-6 text-primary-gray-400'>
-                KIO_101
+              {detail?.maThietBi}
               </p>
             </div>
           </Col>
@@ -30,7 +60,7 @@ const DetailDevice = () => {
                 Loại thiết bị:
               </span>
               <p className='font-normal text-base leading-6 text-primary-gray-400'>
-                Kisok
+              {detail?.loaiThietBi}
               </p>
             </div>
           </Col>
@@ -40,7 +70,7 @@ const DetailDevice = () => {
                 Tên thiết bị:
               </span>
               <p className='font-normal text-base leading-6 text-primary-gray-400'>
-                Kisok
+              {detail?.tenThietBi}
               </p>
             </div>
           </Col>
@@ -50,7 +80,7 @@ const DetailDevice = () => {
                 Tên đăng nhập:
               </span>
               <p className='font-normal text-base leading-6 text-primary-gray-400'>
-                Linhkyo011
+              {detail?.tenDangNhap}
               </p>
             </div>
           </Col>
@@ -60,7 +90,7 @@ const DetailDevice = () => {
                 Địa chỉ IP:
               </span>
               <p className='font-normal text-base leading-6 text-primary-gray-400'>
-                128.172.308
+              {detail?.ip}
               </p>
             </div>
           </Col>
@@ -70,7 +100,7 @@ const DetailDevice = () => {
                 Mật khẩu:
               </span>
               <p className='font-normal text-base leading-6 text-primary-gray-400'>
-                CMS
+              {detail?.matKhau}
               </p>
             </div>
           </Col>
@@ -80,15 +110,14 @@ const DetailDevice = () => {
                 Dịch vụ sử dụng:
               </span>
               <p className='font-normal text-base leading-6 text-primary-gray-400 mt-2'>
-                Khám tim mạch, Khám sản - Phụ khoa, Khám răng hàm mặt, Khám tai
-                mũi họng, Khám hô hấp, Khám tổng quát.
+              {detail?.dichVuSuDung.join(',')}
               </p>
             </div>
           </Col>
         </Row>
         {/* Updated Device button */}
         <Link
-          to='/devices-management/update/:id'
+          to={`/devices-management/update/${id}`}
           className='lg:relative lg:w-full lg:mt-5 lg:top-auto lg:right-auto absolute -right-28 top-0 flex flex-col h-[94px] w-20 justify-center items-center text-center bg-primary-50 text-primary font-bold cursor-pointer hover:text-primary shadow-[0px_0px_6px_rgba(231, 233, 242, 0.8)] rounded-tl-lg'
         >
           <div className='flex justify-center items-center w-[23px] h-[23px]'>
